@@ -40,14 +40,17 @@ const PostForm = ({
     } = useForm<PostFormValues>({
         resolver: zodResolver(postFormSchema),
         defaultValues,
+        mode: 'onChange',
     });
 
     useEffect(() => {
         reset(defaultValues);
     }, [defaultValues, reset]);
 
+    const onSubmitHandler = handleSubmit(onSubmit);
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={onSubmitHandler} className="space-y-4">
             <div>
                 <Controller
                     name="title"
@@ -209,7 +212,10 @@ export function PostsCrud() {
             };
 
             if (editingPost) {
-                const result = await updatePost(editingPost.id, transformedData);
+                const result = await updatePost(editingPost.id, {
+                    id: editingPost.id,
+                    ...transformedData
+                });
                 if (result) {
                     toast.success('Post updated successfully!');
                     setIsFormOpen(false);
@@ -276,7 +282,7 @@ export function PostsCrud() {
                             placeholder="Search posts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                             className="w-64"
                         />
                         <Button variant="outline" size="icon" onClick={handleSearch}>

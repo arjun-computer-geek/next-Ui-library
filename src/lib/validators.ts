@@ -35,7 +35,7 @@ export const updatePostSchema = z.object({
 export const postFormSchema = z.object({
   title: z.string().min(3, { message: 'Title must be at least 3 characters long' }).max(100, { message: 'Title must be less than 100 characters' }),
   body: z.string().min(10, { message: 'Body must be at least 10 characters long' }).max(1000, { message: 'Body must be less than 1000 characters' }),
-  tags: z.string().default(''),
+  tags: z.string(),
   userId: z.number().positive({ message: 'User ID must be a positive number' }),
 });
 
