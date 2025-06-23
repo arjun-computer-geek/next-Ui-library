@@ -77,7 +77,7 @@ const PostForm = ({
                         <textarea
                             {...field}
                             placeholder="Post Content"
-                            className="w-full min-h-[100px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
                         />
                     )}
                 />
@@ -144,8 +144,8 @@ const PostItem = ({
     <Card className="flex items-center justify-between p-4 hover:shadow-md transition-shadow">
         <div className="flex-1">
             <h3 className="font-bold text-lg">{post.title}</h3>
-            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{post.body}</p>
-            <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{post.body}</p>
+            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                 <span>User ID: {post.userId}</span>
                 {post.tags && post.tags.length > 0 && (
                     <span>Tags: {post.tags.join(', ')}</span>
@@ -342,7 +342,7 @@ export function PostsCrud() {
                         ))}
                     </div>
                 ) : posts.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-muted-foreground">
                         No posts found. Create your first post!
                     </div>
                 ) : (
