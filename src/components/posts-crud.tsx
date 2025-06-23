@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Trash2, Edit, PlusCircle, Search, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
+import { Post } from '@/types/post';
 
 // Post Form Component
 const PostForm = ({
@@ -135,8 +136,8 @@ const PostItem = ({
     onDelete,
     isDeleting
 }: {
-    post: any;
-    onEdit: (post: any) => void;
+    post: Post;
+    onEdit: (post: Post) => void;
     onDelete: (id: number) => void;
     isDeleting: boolean;
 }) => (
@@ -179,7 +180,7 @@ const PostItem = ({
 // Main Posts CRUD Component
 export function PostsCrud() {
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingPost, setEditingPost] = useState<any>(null);
+    const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     const {
@@ -228,7 +229,7 @@ export function PostsCrud() {
                     setIsFormOpen(false);
                 }
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to save post');
         }
     };
@@ -244,7 +245,7 @@ export function PostsCrud() {
     };
 
     // Handle edit
-    const handleEdit = (post: any) => {
+    const handleEdit = (post: Post) => {
         setEditingPost(post);
         setIsFormOpen(true);
     };

@@ -63,7 +63,7 @@ export class ApiService {
     }
   }
 
-  static async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  static async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response = await apiClient.post<T>(url, data, config);
       return response.data;
@@ -72,7 +72,7 @@ export class ApiService {
     }
   }
 
-  static async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  static async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response = await apiClient.put<T>(url, data, config);
       return response.data;
@@ -90,7 +90,7 @@ export class ApiService {
     }
   }
 
-  static async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  static async patch<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response = await apiClient.patch<T>(url, data, config);
       return response.data;
@@ -99,7 +99,7 @@ export class ApiService {
     }
   }
 
-  private static handleError(error: any): ApiError {
+  private static handleError(error: unknown): ApiError {
     if (error instanceof AxiosError) {
       const response = error.response;
       if (response) {
@@ -111,7 +111,7 @@ export class ApiService {
       }
     }
     return {
-      message: error.message || 'An unexpected error occurred',
+      message: error instanceof Error ? error.message : 'An unexpected error occurred',
       status: 500,
     };
   }

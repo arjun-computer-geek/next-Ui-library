@@ -70,7 +70,7 @@ const initialState = {
 export const usePostStore = create<PostState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         ...initialState,
         
         setPosts: (posts) => set({ posts }),
@@ -95,8 +95,9 @@ export const usePostStore = create<PostState>()(
               limit: response.limit,
             }));
 
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to fetch posts' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to fetch posts';
+            set({ error: errorMessage });
           } finally {
             if (filters?.skip) {
               set({ isLoadingMore: false });
@@ -111,8 +112,9 @@ export const usePostStore = create<PostState>()(
             set({ isLoading: true, error: null });
             const response = await PostService.getPost(id);
             set({ currentPost: response });
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to fetch post' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to fetch post';
+            set({ error: errorMessage });
           } finally {
             set({ isLoading: false });
           }
@@ -127,8 +129,9 @@ export const usePostStore = create<PostState>()(
               currentPost: response,
             }));
             return response;
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to create post' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to create post';
+            set({ error: errorMessage });
             return null;
           } finally {
             set({ isCreating: false });
@@ -146,8 +149,9 @@ export const usePostStore = create<PostState>()(
               currentPost: state.currentPost?.id === id ? response : state.currentPost,
             }));
             return response;
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to update post' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to update post';
+            set({ error: errorMessage });
             return null;
           } finally {
             set({ isUpdating: false });
@@ -157,14 +161,15 @@ export const usePostStore = create<PostState>()(
         deletePost: async (id) => {
           try {
             set({ isDeleting: true, error: null });
-            const response = await PostService.deletePost(id);
+            await PostService.deletePost(id);
             set((state) => ({
               posts: state.posts.filter((post) => post.id !== id),
               currentPost: state.currentPost?.id === id ? null : state.currentPost,
             }));
             return true;
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to delete post' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to delete post';
+            set({ error: errorMessage });
             return false;
           } finally {
             set({ isDeleting: false });
@@ -183,8 +188,9 @@ export const usePostStore = create<PostState>()(
               skip: response.skip,
               limit: response.limit,
             });
-          } catch (error: any) {
-            set({ error: error.message || 'Failed to search posts' });
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to search posts';
+            set({ error: errorMessage });
           } finally {
             set({ isLoading: false });
           }

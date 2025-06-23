@@ -60,7 +60,7 @@ export class PostService {
 
   // Delete a post
   static async deletePost(id: number): Promise<{ success: boolean }> {
-    await ApiService.delete<any>(API_ENDPOINTS.POSTS.DELETE(id));
+    await ApiService.delete<{ success: boolean }>(API_ENDPOINTS.POSTS.DELETE(id));
     return { success: true };
   }
 
