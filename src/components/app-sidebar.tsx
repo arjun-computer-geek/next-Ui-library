@@ -72,6 +72,17 @@ const data = {
       ],
     },
     {
+      title: "Demo",
+      url: "/demo",
+      icon: Frame,
+      items: [
+        {
+          title: "Posts CRUD",
+          url: "/demo",
+        },
+      ],
+    },
+    {
       title: "Models",
       url: "#",
       icon: Bot,
