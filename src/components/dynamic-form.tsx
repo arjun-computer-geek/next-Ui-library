@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,25 +24,31 @@ interface DynamicFormProps {
     className?: string;
 }
 
-export function DynamicForm({
+export interface DynamicFormRef {
+    trigger: () => Promise<boolean>;
+}
+
+export const DynamicForm = forwardRef<DynamicFormRef, DynamicFormProps>(({
     schema,
     onSubmit,
     defaultValues = {},
     submitText = 'Submit',
     loading = false,
     className = '',
-}: DynamicFormProps) {
+}, ref) => {
     // Generate Zod schema from JSON schema
     const zodSchema = jsonSchemaToZod(schema);
     type FormData = z.infer<typeof zodSchema>;
 
     // Create default values object
     const createDefaultValues = () => {
-        const defaults: Record<string, unknown> = { ...defaultValues };
+        const defaults: Record<string, unknown> = {};
 
         schema.fields.forEach(field => {
             const fieldName = field.name as string;
-            if (field.defaultValue !== undefined) {
+            if (defaultValues[fieldName] !== undefined) {
+                defaults[fieldName] = defaultValues[fieldName];
+            } else if (field.defaultValue !== undefined) {
                 defaults[fieldName] = field.defaultValue;
             } else {
                 // Provide appropriate default based on field type
@@ -85,11 +91,17 @@ export function DynamicForm({
         handleSubmit,
         formState: { errors },
         reset,
+        trigger,
     } = useForm<FormData>({
         resolver: zodResolver(zodSchema),
         defaultValues: createDefaultValues(),
         mode: 'onChange',
     });
+
+    // Expose trigger method via ref
+    useImperativeHandle(ref, () => ({
+        trigger,
+    }));
 
     const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
         try {
@@ -260,4 +272,4 @@ export function DynamicForm({
             </CardContent>
         </Card>
     );
-} 
+}); 

@@ -2,15 +2,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { NavMain } from '@/components/nav-main'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
-// Mock localStorage
+// Mock localStorage with proper implementation
 const localStorageMock = {
     getItem: jest.fn(),
     setItem: jest.fn(),
     removeItem: jest.fn(),
     clear: jest.fn(),
+    length: 0,
+    key: jest.fn(),
 }
+
+// Mock window.localStorage
 Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock
+    value: localStorageMock,
+    writable: true,
 })
 
 const mockItems = [
@@ -45,6 +50,8 @@ const renderNavMain = (items = mockItems) => {
 
 describe('NavMain', () => {
     beforeEach(() => {
+        // Clear all mocks before each test
+        jest.clearAllMocks()
         localStorageMock.getItem.mockClear()
         localStorageMock.setItem.mockClear()
     })
@@ -57,17 +64,25 @@ describe('NavMain', () => {
         // Both menus should be closed by default since isActive is false
         expect(screen.getByText('Playground')).toBeInTheDocument()
         expect(screen.getByText('Demo')).toBeInTheDocument()
+
+        // Submenu items should not be visible initially
+        expect(screen.queryByText('History')).not.toBeInTheDocument()
+        expect(screen.queryByText('Posts CRUD')).not.toBeInTheDocument()
     })
 
-    it('should load saved menu states from localStorage', () => {
+    it('should load saved menu states from localStorage', async () => {
         const savedState = { Playground: true, Demo: false }
         localStorageMock.getItem.mockReturnValue(JSON.stringify(savedState))
 
         renderNavMain()
 
-        // Playground should be open, Demo should be closed
-        expect(screen.getByText('History')).toBeInTheDocument() // Submenu item visible
-        expect(screen.queryByText('Posts CRUD')).not.toBeInTheDocument() // Submenu item not visible
+        // Wait for the component to process the saved state
+        await waitFor(() => {
+            expect(screen.getByText('History')).toBeInTheDocument() // Submenu item visible
+        })
+
+        // Demo submenu should still be closed
+        expect(screen.queryByText('Posts CRUD')).not.toBeInTheDocument()
     })
 
     it('should save menu state to localStorage when toggled', async () => {
@@ -97,6 +112,10 @@ describe('NavMain', () => {
 
         // Should not throw error and should render with default states
         expect(() => renderNavMain()).not.toThrow()
+
+        // Component should still render
+        expect(screen.getByText('Playground')).toBeInTheDocument()
+        expect(screen.getByText('Demo')).toBeInTheDocument()
     })
 
     it('should handle invalid JSON in localStorage', () => {
@@ -104,5 +123,9 @@ describe('NavMain', () => {
 
         // Should not throw error and should render with default states
         expect(() => renderNavMain()).not.toThrow()
+
+        // Component should still render
+        expect(screen.getByText('Playground')).toBeInTheDocument()
+        expect(screen.getByText('Demo')).toBeInTheDocument()
     })
 }) 

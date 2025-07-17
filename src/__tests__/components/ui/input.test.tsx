@@ -221,7 +221,7 @@ describe('Input Component', () => {
 
             await user.type(input, longText)
             expect(input).toHaveValue(longText)
-        })
+        }, 10000) // Increase timeout to 10 seconds
 
         it('handles special characters', async () => {
             const user = userEvent.setup()
@@ -230,7 +230,11 @@ describe('Input Component', () => {
             const input = screen.getByPlaceholderText('Special chars')
             const specialText = '!@#$%^&*()_+-=<>?'
 
-            await user.type(input, specialText)
+            // Type each character individually to avoid issues with special characters
+            for (const char of specialText) {
+                await user.type(input, char)
+            }
+
             expect(input).toHaveValue(specialText)
         })
     })

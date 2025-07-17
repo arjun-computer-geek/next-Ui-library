@@ -20,6 +20,17 @@ expect.extend({
     },
 })
 
+// Mock Next.js Link component
+jest.mock('next/link', () => {
+    return function MockLink({ children, href, ...props }) {
+        return (
+            <a href={href} {...props}>
+                {children}
+            </a>
+        )
+    }
+})
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
     useRouter() {
