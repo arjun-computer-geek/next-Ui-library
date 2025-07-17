@@ -84,6 +84,10 @@ const data = {
           title: "Dynamic Form Generator",
           url: "/dynamic-form-demo",
         },
+        {
+          title: "Streaming Demo",
+          url: "/streaming-demo",
+        },
       ],
     },
     {
