@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -10,8 +9,7 @@ import {
     TrendingUp,
     Activity,
     Database,
-    Globe,
-    Loader2
+    Globe
 } from 'lucide-react';
 
 // Simulated slow loading component
@@ -283,7 +281,7 @@ export default function StreamingDemoPage() {
                         <div className="space-y-2">
                             <h4 className="font-semibold">Progressive Loading</h4>
                             <p className="text-sm text-muted-foreground">
-                                Components load independently, showing content as soon as it's ready.
+                                Components load independently, showing content as soon as it&apos;s ready.
                             </p>
                         </div>
                         <div className="space-y-2">
@@ -301,7 +299,7 @@ export default function StreamingDemoPage() {
                         <div className="space-y-2">
                             <h4 className="font-semibold">Graceful Degradation</h4>
                             <p className="text-sm text-muted-foreground">
-                                Loading states provide clear feedback about what's happening.
+                                Loading states provide clear feedback about what&apos;s happening.
                             </p>
                         </div>
                     </div>

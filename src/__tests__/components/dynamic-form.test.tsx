@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DynamicForm } from '@/components/dynamic-form';
 import { JsonFormSchema } from '@/lib/schema-generator';
@@ -94,11 +94,11 @@ describe('DynamicForm Component', () => {
         };
 
         it('validates required fields', async () => {
-            const user = userEvent.setup();
+            const userEventInstance = userEvent.setup();
             render(<DynamicForm schema={validationSchema} onSubmit={mockOnSubmit} />);
 
             const submitButton = screen.getByText('Submit');
-            await user.click(submitButton);
+            await userEventInstance.click(submitButton);
 
             await waitFor(() => {
                 expect(screen.getByText('Title is required')).toBeInTheDocument();
@@ -108,14 +108,14 @@ describe('DynamicForm Component', () => {
         });
 
         it('validates minimum length', async () => {
-            const user = userEvent.setup();
+            const userEventInstance = userEvent.setup();
             render(<DynamicForm schema={validationSchema} onSubmit={mockOnSubmit} />);
 
             const titleInput = screen.getByLabelText('Title *');
-            await user.type(titleInput, 'ab');
+            await userEventInstance.type(titleInput, 'ab');
 
             const submitButton = screen.getByText('Submit');
-            await user.click(submitButton);
+            await userEventInstance.click(submitButton);
 
             await waitFor(() => {
                 expect(screen.getByText('Title must be at least 3 characters')).toBeInTheDocument();
@@ -272,16 +272,16 @@ describe('DynamicForm Component', () => {
         };
 
         it('submits form with valid data', async () => {
-            const user = userEvent.setup();
+            const userEventInstance = userEvent.setup();
             render(<DynamicForm schema={submissionSchema} onSubmit={mockOnSubmit} />);
 
             const nameInput = screen.getByLabelText('Name *');
             const emailInput = screen.getByLabelText('Email *');
             const submitButton = screen.getByText('Submit');
 
-            await user.type(nameInput, 'John Doe');
-            await user.type(emailInput, 'john@example.com');
-            await user.click(submitButton);
+            await userEventInstance.type(nameInput, 'John Doe');
+            await userEventInstance.type(emailInput, 'john@example.com');
+            await userEventInstance.click(submitButton);
 
             await waitFor(() => {
                 expect(mockOnSubmit).toHaveBeenCalledWith({
@@ -292,16 +292,16 @@ describe('DynamicForm Component', () => {
         });
 
         it('resets form after successful submission', async () => {
-            const user = userEvent.setup();
+            const userEventInstance = userEvent.setup();
             render(<DynamicForm schema={submissionSchema} onSubmit={mockOnSubmit} />);
 
             const nameInput = screen.getByLabelText('Name *');
             const emailInput = screen.getByLabelText('Email *');
             const submitButton = screen.getByText('Submit');
 
-            await user.type(nameInput, 'John Doe');
-            await user.type(emailInput, 'john@example.com');
-            await user.click(submitButton);
+            await userEventInstance.type(nameInput, 'John Doe');
+            await userEventInstance.type(emailInput, 'john@example.com');
+            await userEventInstance.click(submitButton);
 
             await waitFor(() => {
                 expect(nameInput).toHaveValue('');
@@ -310,7 +310,6 @@ describe('DynamicForm Component', () => {
         });
 
         it('handles loading state', async () => {
-            const user = userEvent.setup();
             render(<DynamicForm schema={submissionSchema} onSubmit={mockOnSubmit} loading={true} />);
 
             const submitButton = screen.getByText('Submitting...');
@@ -375,17 +374,17 @@ describe('DynamicForm Component', () => {
         };
 
         it('resets form to default values', async () => {
-            const user = userEvent.setup();
+            const userEventInstance = userEvent.setup();
             render(<DynamicForm schema={resetSchema} onSubmit={mockOnSubmit} />);
 
             const nameInput = screen.getByLabelText('Name');
             const resetButton = screen.getByText('Reset');
 
-            await user.clear(nameInput);
-            await user.type(nameInput, 'New Name');
+            await userEventInstance.clear(nameInput);
+            await userEventInstance.type(nameInput, 'New Name');
             expect(nameInput).toHaveValue('New Name');
 
-            await user.click(resetButton);
+            await userEventInstance.click(resetButton);
             expect(nameInput).toHaveValue('Default Name');
         });
     });

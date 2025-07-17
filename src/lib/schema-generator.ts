@@ -13,7 +13,7 @@ export interface JsonFieldDefinition {
     maxLength?: number;
     pattern?: string;
     options?: Array<{ value: string; label: string }>;
-    defaultValue?: any;
+    defaultValue?: unknown;
     validation?: {
         message?: string;
         custom?: string; // Custom validation rule
@@ -49,7 +49,7 @@ export function jsonFieldToZod(field: JsonFieldDefinition): z.ZodTypeAny {
             schema = z.string(); // We'll handle date validation separately
             break;
         case 'file':
-            schema = z.any(); // File handling is complex, using any for now
+            schema = z.unknown(); // File handling is complex, using unknown for now
             break;
         case 'select':
         case 'multiselect':
@@ -74,7 +74,7 @@ export function jsonFieldToZod(field: JsonFieldDefinition): z.ZodTypeAny {
         } else if (field.type === 'number') {
             schema = (schema as z.ZodNumber).min(1, { message: field.validation?.message || `${field.label || field.name} is required` });
         } else if (field.type === 'multiselect') {
-            schema = (schema as z.ZodArray<any>).min(1, { message: field.validation?.message || `${field.label || field.name} is required` });
+            schema = (schema as z.ZodArray<z.ZodEnum<[string, ...string[]]>>).min(1, { message: field.validation?.message || `${field.label || field.name} is required` });
         }
         // For other types (boolean, select, file, etc.), we'll handle required validation differently
         else if (field.type === 'boolean' || field.type === 'select' || field.type === 'file') {
@@ -163,7 +163,7 @@ export function jsonFieldToZod(field: JsonFieldDefinition): z.ZodTypeAny {
 }
 
 // Convert JSON form schema to Zod schema
-export function jsonSchemaToZod(jsonSchema: JsonFormSchema): z.ZodObject<any> {
+export function jsonSchemaToZod(jsonSchema: JsonFormSchema): z.ZodObject<Record<string, z.ZodTypeAny>> {
     const schemaObject: Record<string, z.ZodTypeAny> = {};
 
     jsonSchema.fields.forEach(field => {
@@ -220,7 +220,7 @@ function getInputType(fieldType: string): string {
 }
 
 // Example JSON schemas for demonstration
-export const exampleSchemas = {
+export const exampleSchemas: Record<string, JsonFormSchema> = {
     userRegistration: {
         title: 'User Registration',
         description: 'Create a new user account',

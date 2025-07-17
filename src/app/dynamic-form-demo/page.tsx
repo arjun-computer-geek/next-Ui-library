@@ -5,7 +5,6 @@ import { DynamicForm } from '@/components/dynamic-form';
 import { exampleSchemas, JsonFormSchema } from '@/lib/schema-generator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Code, Play, FileText, Users, Package } from 'lucide-react';
 
@@ -13,9 +12,9 @@ export default function DynamicFormDemoPage() {
     const [selectedSchema, setSelectedSchema] = useState<keyof typeof exampleSchemas>('userRegistration');
     const [customSchema, setCustomSchema] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState<any>(null);
+    const [formData, setFormData] = useState<Record<string, unknown> | null>(null);
 
-    const handleFormSubmit = async (data: any) => {
+    const handleFormSubmit = async (data: Record<string, unknown>) => {
         setIsLoading(true);
         try {
             // Simulate API call
@@ -23,7 +22,7 @@ export default function DynamicFormDemoPage() {
             setFormData(data);
             toast.success('Form submitted successfully!');
             console.log('Form data:', data);
-        } catch (error) {
+        } catch {
             toast.error('Failed to submit form');
         } finally {
             setIsLoading(false);
@@ -32,10 +31,10 @@ export default function DynamicFormDemoPage() {
 
     const handleCustomSchemaSubmit = () => {
         try {
-            const parsedSchema: JsonFormSchema = JSON.parse(customSchema);
-            setSelectedSchema('custom' as any);
+            JSON.parse(customSchema);
+            setSelectedSchema('custom' as keyof typeof exampleSchemas);
             toast.success('Custom schema loaded successfully!');
-        } catch (error) {
+        } catch {
             toast.error('Invalid JSON schema');
         }
     };
@@ -45,11 +44,11 @@ export default function DynamicFormDemoPage() {
         { key: 'productForm', label: 'Product Form', icon: Package },
     ];
 
-    const currentSchema = selectedSchema === 'userRegistration' || selectedSchema === 'productForm'
+    const currentSchema: JsonFormSchema = selectedSchema === 'userRegistration' || selectedSchema === 'productForm'
         ? exampleSchemas[selectedSchema]
         : (() => {
             try {
-                return JSON.parse(customSchema);
+                return JSON.parse(customSchema) as JsonFormSchema;
             } catch {
                 return exampleSchemas.userRegistration;
             }

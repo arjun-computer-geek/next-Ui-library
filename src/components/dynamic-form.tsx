@@ -17,8 +17,8 @@ import {
 
 interface DynamicFormProps {
     schema: JsonFormSchema;
-    onSubmit: (data: any) => void | Promise<void>;
-    defaultValues?: Record<string, any>;
+    onSubmit: (data: Record<string, unknown>) => void | Promise<void>;
+    defaultValues?: Record<string, unknown>;
     submitText?: string;
     loading?: boolean;
     className?: string;
@@ -38,7 +38,7 @@ export function DynamicForm({
 
     // Create default values object
     const createDefaultValues = () => {
-        const defaults: Record<string, any> = { ...defaultValues };
+        const defaults: Record<string, unknown> = { ...defaultValues };
 
         schema.fields.forEach(field => {
             const fieldName = field.name as string;
@@ -104,7 +104,7 @@ export function DynamicForm({
     const renderField = (field: JsonFieldDefinition) => {
         const config = generateFieldConfig(field);
         const fieldName = field.name as string;
-        const error = errors[fieldName as any];
+        const error = errors[fieldName as keyof FormData];
 
         return (
             <div key={field.name} className="space-y-2">
@@ -114,7 +114,7 @@ export function DynamicForm({
                 </label>
 
                 <Controller
-                    name={fieldName as any}
+                    name={fieldName as keyof FormData}
                     control={control}
                     render={({ field: controllerField }) => {
                         switch (field.type) {
