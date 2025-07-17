@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DynamicForm, DynamicFormRef } from '@/components/dynamic-form';
+import { DynamicForm, DynamicFormRef, DynamicFormProps } from '@/components/dynamic-form';
 import { JsonFormSchema } from '@/lib/schema-generator';
 import { useRef } from 'react';
 
@@ -21,7 +21,7 @@ describe('DynamicForm Component', () => {
     });
 
     // Helper component to use ref in tests
-    const DynamicFormWithRef = ({ schema, onSubmit, ...props }: any) => {
+    const DynamicFormWithRef = ({ schema, onSubmit, ...props }: DynamicFormProps) => {
         const formRef = useRef<DynamicFormRef>(null);
         return (
             <>

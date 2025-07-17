@@ -15,7 +15,7 @@ import {
     generateFieldConfig
 } from '@/lib/schema-generator';
 
-interface DynamicFormProps {
+export interface DynamicFormProps {
     schema: JsonFormSchema;
     onSubmit: (data: Record<string, unknown>) => void | Promise<void>;
     defaultValues?: Record<string, unknown>;
@@ -272,4 +272,6 @@ export const DynamicForm = forwardRef<DynamicFormRef, DynamicFormProps>(({
             </CardContent>
         </Card>
     );
-}); 
+});
+
+DynamicForm.displayName = 'DynamicForm';
