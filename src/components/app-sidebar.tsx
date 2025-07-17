@@ -80,6 +80,10 @@ const data = {
           title: "Posts CRUD",
           url: "/demo",
         },
+        {
+          title: "Dynamic Form Generator",
+          url: "/dynamic-form-demo",
+        },
       ],
     },
     {
