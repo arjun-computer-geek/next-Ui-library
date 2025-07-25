@@ -6,7 +6,8 @@ import { exampleSchemas, JsonFormSchema } from '@/lib/schema-generator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Code, Play, FileText, Users, Package } from 'lucide-react';
+import { Code, Play, FileText, Users, Package, Edit } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DynamicFormDemoPage() {
     const [selectedSchema, setSelectedSchema] = useState<keyof typeof exampleSchemas>('userRegistration');
@@ -62,6 +63,14 @@ export default function DynamicFormDemoPage() {
                     Generate form fields with Zod validation from JSON schema definitions.
                     This feature allows you to create dynamic, type-safe forms without writing repetitive code.
                 </p>
+                <div className="flex justify-center gap-4">
+                    <Link href="/dynamic-form-demo/update-form-example">
+                        <Button variant="outline" className="flex items-center gap-2">
+                            <Edit className="w-4 h-4" />
+                            View Update Form Example
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -216,29 +225,30 @@ export default function DynamicFormDemoPage() {
                             <pre className="bg-muted p-4 rounded-md text-xs overflow-auto">
                                 {`import { DynamicForm } from '@/components/dynamic-form';
 
-const schema = {
-  title: 'User Registration',
-  fields: [
-    {
-      name: 'email',
-      type: 'email',
-      label: 'Email Address',
-      required: true
-    },
-    {
-      name: 'password',
-      type: 'string',
-      label: 'Password',
-      required: true,
-      minLength: 8
-    }
-  ]
-};
+                                    const schema = {
+                                    title: 'User Registration',
+                                    fields: [
+                                        {
+                                        name: 'email',
+                                        type: 'email',
+                                        label: 'Email Address',
+                                        required: true
+                                        },
+                                        {
+                                        name: 'password',
+                                        type: 'string',
+                                        label: 'Password',
+                                        required: true,
+                                        minLength: 8
+                                        }
+                                    ]
+                                    };
 
-<DynamicForm
-  schema={schema}
-  onSubmit={(data) => console.log(data)}
-/>`}
+                                    <DynamicForm
+                                    schema={schema}
+                                    onSubmit={(data) => console.log(data)}
+                                    />`
+                                }
                             </pre>
                         </CardContent>
                     </Card>

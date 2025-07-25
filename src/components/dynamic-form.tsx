@@ -26,6 +26,10 @@ export interface DynamicFormProps {
 
 export interface DynamicFormRef {
     trigger: () => Promise<boolean>;
+    setValue: (fieldName: string, value: unknown) => void;
+    setValues: (values: Record<string, unknown>) => void;
+    reset: (values?: Record<string, unknown>) => void;
+    getValues: () => Record<string, unknown>;
 }
 
 export const DynamicForm = forwardRef<DynamicFormRef, DynamicFormProps>(({
@@ -90,23 +94,43 @@ export const DynamicForm = forwardRef<DynamicFormRef, DynamicFormProps>(({
         control,
         handleSubmit,
         formState: { errors },
-        reset,
+        reset: formReset,
         trigger,
+        setValue: formSetValue,
+        getValues: formGetValues,
     } = useForm<FormData>({
         resolver: zodResolver(zodSchema),
         defaultValues: createDefaultValues(),
         mode: 'onChange',
     });
 
-    // Expose trigger method via ref
+    // Expose methods via ref
     useImperativeHandle(ref, () => ({
         trigger,
+        setValue: (fieldName: string, value: unknown) => {
+            formSetValue(fieldName as keyof FormData, value as any);
+        },
+        setValues: (values: Record<string, unknown>) => {
+            Object.entries(values).forEach(([fieldName, value]) => {
+                formSetValue(fieldName as keyof FormData, value as any);
+            });
+        },
+        reset: (values?: Record<string, unknown>) => {
+            if (values) {
+                formReset(values as any);
+            } else {
+                formReset();
+            }
+        },
+        getValues: () => {
+            return formGetValues() as Record<string, unknown>;
+        },
     }));
 
     const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
         try {
             await onSubmit(data);
-            reset();
+            formReset();
         } catch (error) {
             console.error('Form submission error:', error);
         }
@@ -259,7 +283,7 @@ export const DynamicForm = forwardRef<DynamicFormRef, DynamicFormProps>(({
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => reset()}
+                            onClick={() => formReset()}
                             disabled={loading}
                         >
                             Reset
